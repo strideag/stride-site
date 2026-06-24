@@ -12,6 +12,8 @@ import Testimonials from "./components/sections/Testimonials";
 import Faq from "./components/sections/Faq";
 import FinalCta from "./components/sections/FinalCta";
 import Footer from "./components/sections/Footer";
+import HowWeWorkLottie from "./components/sections/HowWeWorkLottie";
+import Spline from "@splinetool/react-spline/next";
 
 export default function Home() {
   return (
@@ -22,6 +24,7 @@ export default function Home() {
         <Challenges />
         <Services />
         <HowWeWork />
+        <HowWeWorkLottie />
         <CtaBanner
           title="Agende uma call gratuita hoje e ganhe uma análise completa das suas campanhas atuais"
           buttonLabel="Agendar uma conversa"
@@ -36,7 +39,22 @@ export default function Home() {
           title="AGENDE SUA CONSULTORIA GRATUITA! Vagas limitadas — apenas 5 spots disponíveis este mês."
           buttonLabel="Agendar uma conversa"
         />
-        <FinalCta />
+        <FinalCta
+          leftContent={
+            <div
+              className="relative w-full aspect-square max-w-[400px]"
+              style={{
+                mixBlendMode: "screen",
+                maskImage: "radial-gradient(ellipse 85% 70% at 50% 42%, black 35%, transparent 75%), linear-gradient(to bottom, black 60%, transparent 88%)",
+                WebkitMaskImage: "radial-gradient(ellipse 85% 70% at 50% 42%, black 35%, transparent 75%), linear-gradient(to bottom, black 60%, transparent 88%)",
+                maskComposite: "intersect",
+                WebkitMaskComposite: "source-in",
+              }}
+            >
+              <Spline scene="https://prod.spline.design/DFl91MRi1ndfbdRB/scene.splinecode" />
+            </div>
+          }
+        />
       </main>
       <Footer />
     </>
