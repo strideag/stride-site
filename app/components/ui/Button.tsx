@@ -15,15 +15,20 @@ export default function Button({
   href = "#contato",
   variant = "primary",
   className = "",
+  target,
 }: {
   children: ReactNode;
   href?: string;
   variant?: Variant;
   className?: string;
+  target?: string;
 }) {
+  const external = target === "_blank";
   return (
     <a
       href={href}
+      target={target}
+      rel={external ? "noopener noreferrer" : undefined}
       className={`inline-flex items-center justify-center rounded-full px-7 py-3.5 text-[12px] font-medium uppercase tracking-[0.12em] transition-colors duration-200 ${variants[variant]} ${className}`}
     >
       {children}

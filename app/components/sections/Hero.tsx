@@ -25,15 +25,14 @@ export default function Hero() {
       <Container className="relative">
         <div className="max-w-[760px]">
           <h1 className="text-[32px] font-medium leading-[1.12] tracking-[-0.02em] text-cloud sm:text-[40px] lg:text-[44px]">
-            Multiplique seus clientes americanos com uma estratégia digital que
-            realmente funciona
+            Agência de Publicidade nos Estados Unidos
           </h1>
           <p className="mt-6 max-w-[640px] text-lg leading-relaxed text-cloud/80 sm:text-[22px]">
-            Descubra como empresários brasileiros estão conquistando o mercado
-            americano usando marketing digital
+            A agência de performance que faz negócios de brasileiros nos EUA
+            venderem mais
           </p>
           <div className="mt-8">
-            <Button href="#contato">Quero crescer nos EUA</Button>
+            <Button href="#contato">Descubra como vender mais!</Button>
           </div>
         </div>
 

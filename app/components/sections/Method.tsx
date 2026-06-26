@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Container from "../ui/Container";
+import MethodDiagram from "./MethodDiagram";
 
 export default function Method() {
   return (
@@ -15,15 +15,8 @@ export default function Method() {
           </p>
         </div>
 
-        <div className="mt-14 overflow-hidden rounded-3xl border border-white/10 bg-ink-850/40">
-          <Image
-            src="/images/method-stride.png"
-            alt="Método Stride: Aquisição, Engajamento, Retenção e Monetização"
-            width={2460}
-            height={1218}
-            sizes="(max-width: 1280px) 100vw, 1216px"
-            className="h-auto w-full object-contain"
-          />
+        <div className="mt-14">
+          <MethodDiagram />
         </div>
       </Container>
     </section>

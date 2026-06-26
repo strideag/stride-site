@@ -9,6 +9,7 @@ import WhyStride from "./components/sections/WhyStride";
 import GoingAlone from "./components/sections/GoingAlone";
 import Cases from "./components/sections/Cases";
 import Testimonials from "./components/sections/Testimonials";
+import Founders from "./components/sections/Founders";
 import Faq from "./components/sections/Faq";
 import FinalCta from "./components/sections/FinalCta";
 import Footer from "./components/sections/Footer";
@@ -34,6 +35,7 @@ export default function Home() {
         <GoingAlone />
         <Cases />
         <Testimonials />
+        <Founders />
         <Faq />
         <CtaBanner
           title="AGENDE SUA CONSULTORIA GRATUITA! Vagas limitadas — apenas 5 spots disponíveis este mês."

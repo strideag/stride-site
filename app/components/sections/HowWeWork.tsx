@@ -11,7 +11,7 @@ const steps = [
 
 export default function HowWeWork() {
   return (
-    <section className="py-20 lg:py-28">
+    <section id="processo" className="scroll-mt-24 py-20 lg:py-28">
       <Container>
         <SectionTitle>Como Trabalhamos</SectionTitle>
 

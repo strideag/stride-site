@@ -40,3 +40,57 @@ body {
   background: var(--color-accent);
   color: #fff;
 }
+
+/* ── Nav CTA – racing-light border ── */
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes border-spin {
+  to { --border-angle: 360deg; }
+}
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.625rem 1.5rem;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-cloud);
+  cursor: pointer;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  background-image:
+    linear-gradient(var(--color-ink-950), var(--color-ink-950)),
+    conic-gradient(
+      from var(--border-angle),
+      transparent 0deg,
+      rgba(255, 62, 0, 0.15) 25deg,
+      #ff3e00 50deg,
+      rgba(255, 62, 0, 0.15) 75deg,
+      transparent 95deg,
+      transparent 360deg
+    );
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  animation: border-spin 3s linear infinite;
+}
+
+.nav-cta:hover {
+  background-image: none;
+  background-color: var(--color-ink-950);
+  border-color: var(--color-accent);
+}
+
+.nav-cta:active {
+  background-image: none;
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}

@@ -18,7 +18,7 @@ const differentiators = [
 
 export default function WhyStride() {
   return (
-    <section className="py-20 lg:py-28">
+    <section id="beneficios" className="scroll-mt-24 py-20 lg:py-28">
       <Container>
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
