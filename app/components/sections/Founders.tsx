@@ -1,61 +1,59 @@
+import Image from "next/image";
 import Container from "../ui/Container";
-import SectionTitle from "../ui/SectionTitle";
 
-// Para usar fotos reais, adicione o arquivo em /public/images/ e preencha `avatar`.
 const founders = [
   {
     name: "Thiago Bueno",
     role: "Head de Performance",
-    avatar: "",
-    bio: "Especialista em tráfego pago e conversão, gerenciou mais de R$ 100MM em mídia paga.",
+    avatar: "/images/founder-thiago.png",
+    bio: [
+      <>Especialista em tráfego pago e conversão, gerenciou <strong>mais de R$ 100MM em mídia paga</strong>.</>,
+      <>Responsável por escalar empresas de tecnologia e apostas, aumentando faturamento em <strong>milhões de reais</strong>.</>,
+    ],
   },
   {
     name: "Leonardo Lins",
     role: "Head de Branding & Produto",
-    avatar: "",
-    bio: "Designer de Produto e Branding, com projetos realizados para Vivo, Livelo, Dotz, Nestlé, Decathlon entre outros.",
+    avatar: "/images/founder-leonardo.png",
+    bio: [
+      <>Designer de Produto e Branding, com projetos realizados para <strong>Vivo, Livelo, Dotz, Nestlé, Decathlon entre outros</strong>.</>,
+      <>Experiência em grandes agências e foco em construir marcas que <strong>se tornam referência no mercado</strong>.</>,
+    ],
   },
 ];
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("");
-}
 
 export default function Founders() {
   return (
     <section className="py-20 lg:py-28">
       <Container>
-        <SectionTitle className="mx-auto max-w-[680px]">
-          Quem está por trás da <span className="text-accent">Stride</span>
-        </SectionTitle>
+        <h2 className="text-center text-[28px] font-semibold leading-tight text-cloud sm:text-[36px] lg:text-[42px]">
+          Quem são os sócios
+        </h2>
 
-        <div className="mx-auto mt-14 grid max-w-[860px] grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-12">
           {founders.map((f) => (
-            <article
-              key={f.name}
-              className="flex flex-col items-center rounded-3xl border border-white/10 bg-ink-850/60 p-8 text-center"
-            >
-              {f.avatar ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+            <article key={f.name} className="flex gap-6 sm:gap-8">
+              {/* Photo */}
+              <div className="shrink-0">
+                <Image
                   src={f.avatar}
                   alt={f.name}
-                  className="h-24 w-24 rounded-full object-cover ring-2 ring-accent/40"
+                  width={220}
+                  height={280}
+                  className="h-[220px] w-[160px] rounded-2xl object-cover object-top sm:h-[260px] sm:w-[190px]"
                 />
-              ) : (
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-accent to-accent-deep text-2xl font-semibold text-white ring-2 ring-accent/40">
-                  {initials(f.name)}
+              </div>
+
+              {/* Content */}
+              <div className="flex flex-col justify-center">
+                <h3 className="text-xl font-semibold text-cloud sm:text-2xl">{f.name}</h3>
+                <p className="mt-1 text-sm font-medium text-accent">{f.role}</p>
+                <div className="mt-4 space-y-3 text-sm leading-relaxed text-cloud/70">
+                  {f.bio.map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
                 </div>
-              )}
-              <h3 className="mt-6 text-xl font-bold text-cloud">{f.name}</h3>
-              <p className="mt-1 text-sm font-medium text-accent">{f.role}</p>
-              <p className="mt-4 max-w-sm text-sm leading-relaxed text-cloud/70">
-                {f.bio}
-              </p>
+              </div>
             </article>
           ))}
         </div>

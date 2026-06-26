@@ -19,9 +19,11 @@ const clientLogos = [
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden pt-16 pb-16 sm:pt-20">
-      {/* glow */}
-      <div className="pointer-events-none absolute -top-40 right-0 h-[520px] w-[520px] rounded-full bg-accent/20 blur-[140px]" />
+    <section className="relative pt-16 pb-16 sm:pt-20">
+      {/* glow – clipped independently so overflow:hidden doesn't block card hover scale */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 right-0 h-[520px] w-[520px] rounded-full bg-accent/20 blur-[140px]" />
+      </div>
       <Container className="relative">
         <div className="max-w-[760px]">
           <h1 className="text-[32px] font-medium leading-[1.12] tracking-[-0.02em] text-cloud sm:text-[40px] lg:text-[44px]">
@@ -39,14 +41,15 @@ export default function Hero() {
         {/* stat cards */}
         <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {stats.map((s) => (
-            <Image
-              key={s.src}
-              src={s.src}
-              alt={s.alt}
-              width={740}
-              height={630}
-              className="h-auto w-full rounded-2xl object-contain"
-            />
+            <div key={s.src} className="stat-card">
+              <Image
+                src={s.src}
+                alt={s.alt}
+                width={740}
+                height={630}
+                className="h-auto w-full object-contain"
+              />
+            </div>
           ))}
         </div>
 
