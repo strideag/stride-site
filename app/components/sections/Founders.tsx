@@ -32,20 +32,20 @@ export default function Founders() {
 
         <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-12">
           {founders.map((f) => (
-            <article key={f.name} className="flex gap-6 sm:gap-8">
+            <article key={f.name} className="reveal flex flex-col gap-6 sm:flex-row sm:gap-8">
               {/* Photo */}
-              <div className="shrink-0">
+              <div className="shrink-0 flex justify-center sm:block">
                 <Image
                   src={f.avatar}
                   alt={f.name}
                   width={220}
                   height={280}
-                  className="h-[220px] w-[160px] rounded-2xl object-cover object-top sm:h-[260px] sm:w-[190px]"
+                  className="h-[220px] w-[165px] rounded-2xl object-cover object-top sm:h-[260px] sm:w-[190px]"
                 />
               </div>
 
               {/* Content */}
-              <div className="flex flex-col justify-center">
+              <div className="flex flex-col sm:justify-center">
                 <h3 className="text-xl font-semibold text-cloud sm:text-2xl">{f.name}</h3>
                 <p className="mt-1 text-sm font-medium text-accent">{f.role}</p>
                 <div className="mt-4 space-y-3 text-sm leading-relaxed text-cloud/70">

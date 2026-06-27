@@ -31,7 +31,7 @@ export default function WhyStride() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+          <div className="reveal flex flex-col gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/5">
             {differentiators.map((d) => (
               <div key={d.title} className="bg-ink-850/80 p-7">
                 <h3 className="text-xl font-medium leading-snug text-cloud sm:text-2xl">

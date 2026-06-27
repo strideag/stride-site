@@ -14,7 +14,7 @@ export default function HowWeWorkLottie() {
     <section className="py-20 lg:py-28">
       <Container>
         <SectionTitle>Como Trabalhamos</SectionTitle>
-        <div className="mt-16 w-full max-w-5xl mx-auto">
+        <div className="mt-16 w-full">
           <DotLottieReact
             src="/lotties/animation-passos-v2.json"
             autoplay

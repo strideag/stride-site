@@ -101,10 +101,41 @@ body {
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.stat-card:hover {
+.stat-card:hover,
+.stat-card:active {
   transform: scale(1.04);
 }
 
 .stat-card img {
   display: block;
+}
+
+/* ── Cases stacked sticky — responsive peek offsets ── */
+.case-sticky   { position: sticky; }
+.case-sticky-0 { top: 88px;  z-index: 10; }
+.case-sticky-1 { top: 148px; z-index: 11; }
+.case-sticky-2 { top: 208px; z-index: 12; }
+
+@media (max-width: 767px) {
+  .case-sticky-0 { top: 80px;  }
+  .case-sticky-1 { top: 112px; }
+  .case-sticky-2 { top: 144px; }
+}
+
+/* ── Scroll reveal — progressive enhancement ── */
+@keyframes fade-slide-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    opacity: 0;
+    animation: fade-slide-up 0.65s ease forwards;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+  .reveal-d1 { animation-delay: 0.1s; }
+  .reveal-d2 { animation-delay: 0.2s; }
+  .reveal-d3 { animation-delay: 0.3s; }
 }

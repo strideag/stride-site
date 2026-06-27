@@ -19,7 +19,7 @@ export default function Challenges() {
           {challenges.map((text, i) => (
             <div
               key={i}
-              className="group rounded-2xl border border-white/10 bg-ink-850/60 p-7 transition-colors hover:border-accent/50"
+              className={`reveal reveal-d${i} group rounded-2xl border border-white/10 bg-ink-850/60 p-7 transition-colors hover:border-accent/50 active:border-accent/50`}
             >
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/15 text-lg font-bold text-accent">
                 {String(i + 1).padStart(2, "0")}
