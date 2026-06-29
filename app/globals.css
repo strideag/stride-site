@@ -122,6 +122,12 @@ body {
   .case-sticky-2 { top: 144px; }
 }
 
+/* ── Challenge card float animation ── */
+@keyframes challengeFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
 /* ── Scroll reveal — progressive enhancement ── */
 @keyframes fade-slide-up {
   from { opacity: 0; transform: translateY(28px); }
