@@ -5,7 +5,7 @@ import Button from "../ui/Button";
 // Absolute paths so anchors work from subpages (/sobre, /servicos/*, /contato)
 const navLinks = [
   { label: "Serviços", href: "/#servicos" },
-  { label: "Benefícios", href: "/#beneficios" },
+  { label: "Cases", href: "/cases" },
   { label: "Nosso processo", href: "/#processo" },
   { label: "Sobre", href: "/sobre" },
   { label: "Contato", href: "/contato" },

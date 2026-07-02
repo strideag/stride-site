@@ -4,11 +4,12 @@ import React from "react";
 import Container from "../ui/Container";
 
 type Row = { label: string; text: string };
-type CaseItem = { n: string; title: React.ReactNode; rows: Row[] };
+type CaseItem = { n: string; title: React.ReactNode; rows: Row[]; href: string };
 
 const cases: CaseItem[] = [
   {
     n: "01",
+    href: "/cases/tradicionalbet",
     title: (
       <>
         Empresa de iGaming que escalou de 100 mil para{" "}
@@ -23,6 +24,7 @@ const cases: CaseItem[] = [
   },
   {
     n: "02",
+    href: "/cases/pm-run",
     title: (
       <>
         Startup de tecnologia (ITSS PM RUN) que atingiu{" "}
@@ -37,6 +39,7 @@ const cases: CaseItem[] = [
   },
   {
     n: "03",
+    href: "/cases/hable",
     title: (
       <>
         Empresa de Telecom (Parceira Claro) com aumento de{" "}
@@ -71,6 +74,12 @@ export default function Cases() {
           <h2 className="reveal text-[28px] font-semibold leading-tight tracking-tight text-cloud sm:text-[36px] lg:text-[44px]">
             Veja nossos<br />Cases de Sucesso
           </h2>
+          <a
+            href="/cases"
+            className="mt-6 inline-block rounded-full border border-white/15 px-6 py-2.5 text-sm text-cloud/80 transition-colors hover:border-accent hover:text-accent"
+          >
+            Ver todos os cases →
+          </a>
         </Container>
       </div>
 
@@ -102,6 +111,12 @@ export default function Cases() {
                     </p>
                   ))}
                 </div>
+                <a
+                  href={c.href}
+                  className="mt-7 inline-block text-sm font-medium text-accent transition-colors hover:text-accent-light"
+                >
+                  Ver case completo →
+                </a>
               </div>
             </div>
 
