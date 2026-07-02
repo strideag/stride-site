@@ -122,6 +122,87 @@ body {
   .case-sticky-2 { top: 144px; }
 }
 
+/* ── Hero cinematic entrance ─────────────────────────────
+   Choreography (see DESIGN.md §4):
+   0.0s glow fade · 0.2s headline word-by-word (80ms stagger) ·
+   0.6s sub · 0.8s CTA · 1.0s stat cards (spring, 120ms stagger) ·
+   1.4s client logos                                          */
+@keyframes hero-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-glow-drift {
+  to { transform: translateY(120px); }
+}
+
+.hero-glow { animation: hero-fade 1.2s ease-out both; }
+
+/* Parallax: glow drifts down over the first viewport of scroll,
+   creating depth against the 1x-speed text */
+@supports (animation-timeline: scroll()) {
+  .hero-glow {
+    animation:
+      hero-fade 1.2s ease-out both,
+      hero-glow-drift linear both;
+    animation-timeline: auto, scroll();
+    animation-range: normal, 0 100vh;
+  }
+}
+
+.hero-word {
+  display: inline-block;
+  animation: hero-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.2s + var(--word-i, 0) * 80ms);
+}
+
+.hero-sub { animation: hero-rise 0.7s ease-out 0.6s both; }
+.hero-cta { animation: hero-rise 0.7s ease-out 0.8s both; }
+
+.hero-stat {
+  animation: hero-rise 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(1s + var(--stat-i, 0) * 120ms);
+}
+
+/* logos keep their resting 0.7 opacity (utility class), so the
+   entrance fade targets that value instead of 1 */
+@keyframes hero-fade-logos {
+  from { opacity: 0; }
+  to   { opacity: 0.7; }
+}
+.hero-logos { animation: hero-fade-logos 1s ease-out 1.4s both; }
+
+/* Spline scene: slow zoom-settle as it enters the viewport */
+@keyframes spline-zoom {
+  from { transform: scale(1.08); opacity: 0.4; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@supports (animation-timeline: view()) {
+  .spline-zoom {
+    animation: spline-zoom 1.2s ease-out both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 60%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow,
+  .hero-word,
+  .hero-sub,
+  .hero-cta,
+  .hero-stat,
+  .hero-logos,
+  .spline-zoom {
+    animation: none;
+  }
+}
+
 /* ── Challenge card float animation ── */
 @keyframes challengeFloat {
   0%, 100% { transform: translateY(0px); }

@@ -46,7 +46,7 @@ export default function Home() {
         <FinalCta
           leftContent={
             <div
-              className="relative w-full aspect-square max-w-[400px]"
+              className="spline-zoom relative w-full aspect-square max-w-[400px]"
               style={{
                 mixBlendMode: "screen",
                 maskImage: "radial-gradient(ellipse 85% 70% at 50% 42%, black 35%, transparent 75%), linear-gradient(to bottom, black 60%, transparent 88%)",

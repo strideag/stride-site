@@ -1,6 +1,9 @@
 import Image from "next/image";
+import type { CSSProperties, ReactNode } from "react";
 import Container from "../ui/Container";
 import Button from "../ui/Button";
+
+const HEADLINE = "Ajudamos empresas de tecnologia a escalarem receita";
 
 const stats = [
   { src: "/images/card-1.png", alt: "R$300+ milhões em vendas realizadas para os clientes em 2024" },
@@ -22,39 +25,54 @@ export default function Hero() {
     <section className="relative pt-16 pb-16 sm:pt-20">
       {/* glow – clipped independently so overflow:hidden doesn't block card hover scale */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 right-0 h-[520px] w-[520px] rounded-full bg-accent/20 blur-[140px]" />
+        <div className="hero-glow absolute -top-40 right-0 h-[520px] w-[520px] rounded-full bg-accent/20 blur-[140px]" />
       </div>
       <Container className="relative">
         <div className="max-w-[760px]">
           <h1 className="text-[32px] font-medium leading-[1.12] tracking-[-0.02em] text-cloud sm:text-[40px] lg:text-[44px]">
-            Ajudamos empresas de tecnologia a escalarem receita
+            {HEADLINE.split(" ").map((word, i) => (
+              <span
+                key={i}
+                className="hero-word"
+                style={{ "--word-i": i } as CSSProperties}
+              >
+                {word}
+              </span>
+            )).reduce<ReactNode[]>((acc, el, i) => (i === 0 ? [el] : [...acc, " ", el]), [])}
           </h1>
-          <p className="mt-6 max-w-[640px] text-lg leading-relaxed text-cloud/80 sm:text-[22px]">
+          <p className="hero-sub mt-6 max-w-[640px] text-lg leading-relaxed text-cloud/80 sm:text-[22px]">
             A agência de performance com foco absoluto em estratégias que geram
             resultados e crescimento previsível
           </p>
-          <div className="mt-8">
+          <div className="hero-cta mt-8">
             <Button href="#contato">Descubra como escalar sua receita</Button>
           </div>
         </div>
 
-        {/* stat cards */}
+        {/* stat cards – entrance animation on the wrapper so the fill-mode
+            transform doesn't override the .stat-card hover scale */}
         <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
-          {stats.map((s) => (
-            <div key={s.src} className="stat-card">
-              <Image
-                src={s.src}
-                alt={s.alt}
-                width={740}
-                height={630}
-                className="h-auto w-full object-contain"
-              />
+          {stats.map((s, i) => (
+            <div
+              key={s.src}
+              className="hero-stat"
+              style={{ "--stat-i": i } as CSSProperties}
+            >
+              <div className="stat-card">
+                <Image
+                  src={s.src}
+                  alt={s.alt}
+                  width={740}
+                  height={630}
+                  className="h-auto w-full object-contain"
+                />
+              </div>
             </div>
           ))}
         </div>
 
         {/* client logos */}
-        <div className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-6 opacity-70 grayscale">
+        <div className="hero-logos mt-14 flex flex-wrap items-center gap-x-10 gap-y-6 opacity-70 grayscale">
           {clientLogos.map((logo) => (
             <Image
               key={logo.alt}
