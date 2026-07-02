@@ -17,7 +17,7 @@ export default function CtaBanner({
             <h2 className="text-xl font-medium leading-snug text-white sm:text-2xl">
               {title}
             </h2>
-            <Button href="#contato" variant="light">
+            <Button href="/contato" variant="light">
               {buttonLabel}
             </Button>
           </div>

@@ -1,5 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 import Container from "../ui/Container";
+import { services as servicePages } from "../../lib/services";
 
 const services = [
   {
@@ -53,6 +55,19 @@ export default function Services() {
                 className="h-auto w-full object-cover"
               />
             </article>
+          ))}
+        </div>
+
+        {/* Deep links to the dedicated service pages (SEO) */}
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          {servicePages.map((s) => (
+            <Link
+              key={s.slug}
+              href={`/servicos/${s.slug}`}
+              className="rounded-full border border-white/15 px-5 py-2.5 text-sm text-cloud/80 transition-colors hover:border-accent hover:text-accent"
+            >
+              {s.navLabel} →
+            </Link>
           ))}
         </div>
       </Container>

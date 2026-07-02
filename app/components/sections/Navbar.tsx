@@ -2,10 +2,13 @@ import Image from "next/image";
 import Container from "../ui/Container";
 import Button from "../ui/Button";
 
+// Absolute paths so anchors work from subpages (/sobre, /servicos/*, /contato)
 const navLinks = [
-  { label: "Serviços", href: "#servicos" },
-  { label: "Benefícios", href: "#beneficios" },
-  { label: "Nosso processo", href: "#processo" },
+  { label: "Serviços", href: "/#servicos" },
+  { label: "Benefícios", href: "/#beneficios" },
+  { label: "Nosso processo", href: "/#processo" },
+  { label: "Sobre", href: "/sobre" },
+  { label: "Contato", href: "/contato" },
 ];
 
 const WHATSAPP_URL =
@@ -15,7 +18,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-ink-950/80 backdrop-blur-md">
       <Container className="flex h-20 items-center justify-between gap-6">
-        <a href="#" className="flex items-center" aria-label="Stride">
+        <a href="/" className="flex items-center" aria-label="Stride">
           <Image
             src="/images/stride-logo.svg"
             alt="Stride"

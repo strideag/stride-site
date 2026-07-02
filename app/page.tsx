@@ -16,10 +16,25 @@ import FinalCta from "./components/sections/FinalCta";
 import Footer from "./components/sections/Footer";
 import HowWeWorkLottie from "./components/sections/HowWeWorkLottie";
 import Spline from "@splinetool/react-spline/next";
+import { homeFaqs } from "./lib/faqs";
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: homeFaqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
 
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
       <Navbar />
       <main className="flex-1">
         <Hero />
