@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     // already-reasonably-sized exported assets directly. Re-enable if deploying somewhere
     // with a working sharp build (e.g. Vercel).
     unoptimized: true,
+    remotePatterns: [{ protocol: "https", hostname: "cdn.sanity.io" }],
   },
 };
 
