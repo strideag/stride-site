@@ -6,6 +6,7 @@ import HowWeWork from "./components/sections/HowWeWork";
 import CtaBanner from "./components/sections/CtaBanner";
 import Method from "./components/sections/Method";
 import WhyStride from "./components/sections/WhyStride";
+import StrideVsMarket from "./components/sections/StrideVsMarket";
 import GoingAlone from "./components/sections/GoingAlone";
 import Cases from "./components/sections/Cases";
 import Testimonials from "./components/sections/Testimonials";
@@ -32,6 +33,7 @@ export default function Home() {
         />
         <Method />
         <WhyStride />
+        <StrideVsMarket />
         <GoingAlone />
         <Cases />
         <Testimonials />

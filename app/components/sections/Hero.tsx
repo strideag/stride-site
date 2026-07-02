@@ -27,14 +27,14 @@ export default function Hero() {
       <Container className="relative">
         <div className="max-w-[760px]">
           <h1 className="text-[32px] font-medium leading-[1.12] tracking-[-0.02em] text-cloud sm:text-[40px] lg:text-[44px]">
-            Agência de Publicidade nos Estados Unidos
+            Ajudamos empresas de tecnologia a escalarem receita
           </h1>
           <p className="mt-6 max-w-[640px] text-lg leading-relaxed text-cloud/80 sm:text-[22px]">
-            A agência de performance que faz negócios de brasileiros nos EUA
-            venderem mais
+            A agência de performance com foco absoluto em estratégias que geram
+            resultados e crescimento previsível
           </p>
           <div className="mt-8">
-            <Button href="#contato">Descubra como vender mais!</Button>
+            <Button href="#contato">Descubra como escalar sua receita</Button>
           </div>
         </div>
 

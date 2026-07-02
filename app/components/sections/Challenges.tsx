@@ -265,7 +265,7 @@ function IllustrationMoney() {
 // ── Challenge data ─────────────────────────────────────────────────────────────
 const challenges = [
   {
-    text: "Está perdendo clientes para concorrentes que anunciam online",
+    text: "Está perdendo espaço para concorrentes que dominam os canais digitais",
     Illustration: IllustrationCompetitors,
   },
   {
@@ -273,11 +273,11 @@ const challenges = [
     Illustration: IllustrationReferrals,
   },
   {
-    text: "Não sabe por onde começar no marketing digital",
+    text: "Investe em vários canais sem saber o que realmente gera receita",
     Illustration: IllustrationMarketing,
   },
   {
-    text: "Tem medo de perder dinheiro com anúncios mal feitos",
+    text: "As vendas estagnaram e o crescimento deixou de ser previsível",
     Illustration: IllustrationMoney,
   },
 ];

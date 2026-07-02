@@ -10,9 +10,9 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Stride — Multiplique seus clientes americanos",
+  title: "Stride — Marketing de performance para empresas de tecnologia",
   description:
-    "Descubra como empresários brasileiros estão conquistando o mercado americano com estratégias de marketing digital que realmente funcionam.",
+    "Agência de marketing digital que ajuda empresas tech e B2B a escalarem receita com tráfego pago, SEO, CRO e consultoria de growth. Mais de R$300 milhões em vendas geradas para clientes.",
 };
 
 export default function RootLayout({

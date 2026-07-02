@@ -34,7 +34,7 @@ export default function Services() {
           </h2>
           <p className="mt-4 text-base leading-relaxed text-cloud/70">
             Nossa equipe especializada desenvolve estratégias completas de
-            marketing digital focadas no mercado americano:
+            marketing digital focadas em performance e receita:
           </p>
         </div>
 

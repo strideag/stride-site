@@ -7,8 +7,8 @@ const differentiators = [
     desc: 'Outras agências só focam em "cliques" e "likes". Aqui, nosso foco é ROI real e aumento de faturamento.',
   },
   {
-    title: "Especialização em Negócios Brasileiros nos EUA",
-    desc: "Se seu negócio fatura mais de US$ 20.000/mês, nossa equipe entende seus desafios e sabe exatamente como posicionar sua marca no mercado americano.",
+    title: "Especialização em Negócios de Tecnologia e B2B",
+    desc: "Fit total de atuação: entendemos funil, produto e receita recorrente. Um time de consultores sêniores que sabe exatamente como escalar negócios tech.",
   },
   {
     title: "Times de Tráfego, Copywriting e Design Trabalhando Juntos",

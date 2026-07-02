@@ -4,31 +4,30 @@ import { useState } from "react";
 import Container from "../ui/Container";
 import SectionTitle from "../ui/SectionTitle";
 
-// TODO: revisar perguntas/respostas com o conteúdo final (o design trazia placeholders).
 const faqs = [
   {
     q: "Quanto tempo até eu ver os primeiros resultados?",
-    a: "Os primeiros indicadores de performance aparecem já nas primeiras semanas de campanha. Resultados consistentes de faturamento costumam se consolidar entre o 2º e o 3º mês, conforme otimizamos os criativos e o funil.",
+    a: "Somos rápidos e executores: trabalhamos com experimentos em sprints semanais desde o primeiro dia. Os primeiros indicadores de performance aparecem nas primeiras semanas, e resultados consistentes de receita costumam se consolidar entre o 2º e o 3º mês.",
   },
   {
-    q: "Preciso já ter operação nos Estados Unidos?",
-    a: "Não. Ajudamos empresários brasileiros desde o posicionamento inicial no mercado americano até a escala. Estruturamos a estratégia de acordo com o seu estágio atual.",
+    q: "Vocês atendem qualquer segmento?",
+    a: "Nosso foco total é em negócios de tecnologia e B2B — é onde temos fit completo de atuação e os melhores cases. Se o seu negócio é orientado a performance e crescimento, avaliamos o encaixe na sessão estratégica gratuita.",
   },
   {
     q: "Qual o investimento mínimo recomendado?",
-    a: "Trabalhamos melhor com negócios que faturam a partir de US$ 20.000/mês, mas avaliamos cada caso na sessão estratégica gratuita para indicar o melhor caminho.",
+    a: "Nossos planos acompanham o seu investimento em mídia e começam em R$ 3.000/mês. Na sessão estratégica gratuita analisamos seu momento e indicamos o plano com melhor retorno para o seu estágio.",
   },
   {
     q: "Vocês cuidam dos criativos e das landing pages também?",
-    a: "Sim. Nossos times de tráfego, copywriting e design trabalham juntos para entregar campanhas completas: criativos, páginas de conversão e otimização contínua.",
+    a: "Sim. Nossos times de tráfego, copywriting e design trabalham juntos para entregar campanhas completas: criativos, páginas de conversão, testes A/B e otimização contínua (CRO).",
   },
   {
-    q: "Como funciona o acompanhamento dos resultados?",
-    a: "Você recebe relatórios claros com as principais métricas e participa de reuniões periódicas. Nosso foco é ROI real e aumento de faturamento, não métricas de vaidade.",
+    q: "Como funciona o modelo de trabalho?",
+    a: "Uma reunião semanal de alinhamento para acompanhar métricas, definir sprints e planejar a próxima semana — e uma reunião mensal de fechamento e estratégia. Você acompanha tudo com relatórios claros via Lookerstudio, com foco em ROI real, não métricas de vaidade.",
   },
   {
     q: "Existe fidelidade ou contrato de permanência?",
-    a: "Entregamos valor mês a mês. Os detalhes de contrato são alinhados na proposta, sempre com transparência e foco em resultado.",
+    a: "Não. Pagamentos mensais e cancelamento sem multas. Nós nos pagamos no tempo: somos orientados pelo ROI do nosso trabalho.",
   },
 ];
 

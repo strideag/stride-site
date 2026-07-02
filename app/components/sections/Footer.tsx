@@ -15,8 +15,8 @@ export default function Footer() {
               className="h-9 w-auto"
             />
             <p className="mt-5 text-base text-faint">
-              Estratégias de marketing digital que ajudam empresários
-              brasileiros a venderem mais no mercado americano.
+              Agência de marketing digital de performance que ajuda empresas
+              de tecnologia a escalarem receita.
             </p>
           </div>
 
