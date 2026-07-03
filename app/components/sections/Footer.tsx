@@ -65,6 +65,9 @@ export default function Footer() {
             <a href="#" className="transition-colors hover:text-cloud">
               Política de privacidade
             </a>
+            <a href="/studio" className="transition-colors hover:text-cloud">
+              Admin
+            </a>
           </div>
         </div>
       </Container>
