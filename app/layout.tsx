@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import { SITE_URL, SITE_NAME } from "./lib/site";
+import { SITE_URL, SITE_NAME, INSTAGRAM_URL } from "./lib/site";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -34,6 +34,7 @@ const organizationLd = {
   logo: `${SITE_URL}/images/stride-logo.svg`,
   description:
     "Agência de marketing digital de performance que ajuda empresas de tecnologia a escalarem receita.",
+  sameAs: [INSTAGRAM_URL],
   founder: [
     { "@type": "Person", name: "Thiago Bueno" },
     { "@type": "Person", name: "Leonardo Lins" },
