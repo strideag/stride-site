@@ -764,3 +764,220 @@ body {
   .method-pulse,
   .method-conn-line { animation: none; }
 }
+
+/* ── Como Trabalhamos — process timeline ──────────────────────
+   Alternating zigzag on desktop / single left rail on mobile, with
+   an animated connecting rail, sequential marker pulses and per-card
+   cursor tilt. --rail-x is the shared x-position of rail + markers.  */
+.tl-grid {
+  --rail-x: 22px;
+  padding: 8px 0;
+}
+@media (min-width: 1024px) {
+  .tl-grid { --rail-x: 50%; }
+}
+
+/* faint grid backdrop (Figma) */
+.tl-grid::before {
+  content: "";
+  position: absolute;
+  inset: -40px -8%;
+  pointer-events: none;
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 104px 104px;
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 45%, #000 45%, transparent 82%);
+  mask-image: radial-gradient(120% 90% at 50% 45%, #000 45%, transparent 82%);
+}
+
+.tl-rail {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: var(--rail-x);
+  width: 2px;
+  margin-left: -1px;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 62, 0, 0.5) 0 5px,
+    transparent 5px 11px
+  );
+  z-index: 1;
+}
+.tl-rail-pulse {
+  position: absolute;
+  left: var(--rail-x);
+  top: 18px;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 9999px;
+  background: #ff3e00;
+  box-shadow: 0 0 14px 3px rgba(255, 62, 0, 0.7);
+  z-index: 2;
+  animation: tl-rail-travel 5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes tl-rail-travel {
+  0%   { top: 18px; opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { top: calc(100% - 18px); opacity: 0; }
+}
+
+.tl-row { position: relative; z-index: 3; }
+
+.tl-marker {
+  position: absolute;
+  left: var(--rail-x);
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  margin: -7.5px 0 0 -7.5px;
+  border-radius: 9999px;
+  background: #1e1e1e;
+  border: 2px solid rgba(255, 62, 0, 0.6);
+  z-index: 4;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, background 0.4s ease;
+}
+.tl-marker[data-active="true"] {
+  background: #ff3e00;
+  transform: scale(1.35);
+  box-shadow: 0 0 0 4px rgba(255, 62, 0, 0.18), 0 0 16px 2px rgba(255, 62, 0, 0.6);
+}
+
+.tl-connector {
+  position: absolute;
+  top: 50%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(255, 62, 0, 0.45) 0 4px, transparent 4px 8px);
+  z-index: 1;
+}
+/* mobile: connector runs from rail to the card on the right */
+.tl-connector { left: var(--rail-x); width: 26px; }
+
+.tl-card-wrap { margin-left: calc(var(--rail-x) + 40px); }
+
+@media (min-width: 1024px) {
+  .tl-row[data-side="left"] .tl-card-wrap {
+    margin-left: 0;
+    margin-right: calc(50% + 44px);
+  }
+  .tl-row[data-side="right"] .tl-card-wrap {
+    margin-left: calc(50% + 44px);
+    margin-right: 0;
+  }
+  .tl-row[data-side="left"] .tl-connector {
+    left: auto;
+    right: 50%;
+    width: 44px;
+    margin-right: 1px;
+  }
+  .tl-row[data-side="right"] .tl-connector {
+    left: 50%;
+    width: 44px;
+    margin-left: 1px;
+  }
+}
+
+/* Card — tilt / glow / sheen (shares the pattern of the other sections) */
+.tl-card {
+  --mx: 0;
+  --my: 0;
+  transform: rotateX(calc(var(--my) * -4deg)) rotateY(calc(var(--mx) * 6deg));
+  transform-style: preserve-3d;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s ease,
+    box-shadow 0.5s ease;
+  will-change: transform;
+}
+.tl-card[data-goal="true"] {
+  background: linear-gradient(180deg, #ff7a28 24.5%, #fb5937 75.8%, #ff3e00 201%);
+  border-color: rgba(255, 122, 40, 0.6);
+}
+.tl-card[data-active="true"] {
+  border-color: rgba(255, 62, 0, 0.5);
+  box-shadow: 0 18px 50px -28px rgba(255, 62, 0, 0.5);
+}
+.tl-card:hover {
+  border-color: rgba(255, 62, 0, 0.6);
+  box-shadow:
+    0 26px 65px -30px rgba(255, 62, 0, 0.55),
+    0 10px 30px -14px rgba(0, 0, 0, 0.75);
+}
+.tl-card:active {
+  transition-duration: 0.12s;
+  transform: rotateX(calc(var(--my) * -4deg)) rotateY(calc(var(--mx) * 6deg)) scale(0.98);
+}
+
+.tl-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  background: radial-gradient(
+    260px circle at calc(50% + var(--mx) * 42%) calc(50% + var(--my) * 42%),
+    rgba(255, 62, 0, 0.16),
+    transparent 62%
+  );
+}
+.tl-card:hover .tl-glow,
+.tl-card[data-active="true"]:not([data-goal="true"]) .tl-glow { opacity: 1; }
+
+.tl-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.tl-sheen::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: 0;
+  width: 42%;
+  height: 180%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.07), transparent);
+  transform: translateX(-160%) rotate(8deg);
+  transition: transform 0.85s ease;
+}
+.tl-card:hover .tl-sheen::after { transform: translateX(380%) rotate(8deg); }
+
+/* pill + underline */
+.tl-pill { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.tl-pill[data-variant="orange"] {
+  background: linear-gradient(180deg, #ff7a28 24.5%, #fb5937 75.8%, #ff3e00 201%);
+}
+/* goal: dark chip with accent text (sits on the orange card) */
+.tl-pill[data-variant="goal"] {
+  background: #1e1e1e;
+  color: var(--color-accent);
+}
+.tl-card:hover .tl-pill,
+.tl-card[data-active="true"] .tl-pill { transform: translateY(-2px) scale(1.03); }
+
+.tl-underline {
+  background: linear-gradient(90deg, #ff7a28, #ff3e00);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tl-card:hover .tl-underline,
+.tl-card[data-active="true"] .tl-underline { transform: scaleX(1.35); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tl-card,
+  .tl-card:hover,
+  .tl-card:active,
+  .tl-card[data-active="true"] { transform: none; }
+  .tl-rail-pulse { animation: none; opacity: 0; }
+  .tl-sheen::after { transition: none; }
+  .tl-marker[data-active="true"] { transform: scale(1.35); }
+  .tl-card:hover .tl-pill,
+  .tl-card[data-active="true"] .tl-pill,
+  .tl-card:hover .tl-underline,
+  .tl-card[data-active="true"] .tl-underline { transform: none; }
+}
