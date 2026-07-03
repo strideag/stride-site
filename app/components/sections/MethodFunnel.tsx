@@ -35,13 +35,29 @@ const stages: Stage[] = [
     n: "01",
     label: "Engajamento",
     desc: "Construir interesse e confiança",
-    icon: <img src={`${IMG}icon-engajamento.svg`} alt="" className="h-full w-auto" />,
+    // preserveAspectRatio="none" is baked into the source SVG, so the box
+    // must carry the icon's own viewBox ratio or the browser stretches it.
+    icon: (
+      <img
+        src={`${IMG}icon-engajamento.svg`}
+        alt=""
+        className="h-full w-auto"
+        style={{ aspectRatio: "74 / 69.5151" }}
+      />
+    ),
   },
   {
     n: "02",
     label: "Aquisição",
     desc: "Atrair a atenção do público",
-    icon: <img src={`${IMG}icon-aquisicao.svg`} alt="" className="h-full w-auto" />,
+    icon: (
+      <img
+        src={`${IMG}icon-aquisicao.svg`}
+        alt=""
+        className="h-full w-auto"
+        style={{ aspectRatio: "94 / 73.5038" }}
+      />
+    ),
   },
   {
     n: "03",
@@ -53,7 +69,14 @@ const stages: Stage[] = [
     n: "04",
     label: "Retenção",
     desc: "Manter os clientes comprando",
-    icon: <img src={`${IMG}icon-retencao.svg`} alt="" className="h-full w-auto" />,
+    icon: (
+      <img
+        src={`${IMG}icon-retencao.svg`}
+        alt=""
+        className="h-full w-auto"
+        style={{ aspectRatio: "74 / 72.3001" }}
+      />
+    ),
   },
 ];
 
