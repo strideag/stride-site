@@ -1,28 +1,42 @@
-import Image from "next/image";
 import Link from "next/link";
 import Container from "../ui/Container";
+import ServiceCard, { type ServiceCardData } from "./ServiceCard";
 import { services as servicePages } from "../../lib/services";
 
-const services = [
+const services: ServiceCardData[] = [
   {
+    icon: "trafego",
     title: "Tráfego Pago",
     desc: "Campanhas de tráfego pago otimizadas para seu segmento.",
-    img: "/images/service-trafego.png",
+    bullets: [
+      "Atraia seus clientes para o seu funil de vendas",
+      "Tenha mais previsibilidade e mensure o retorno do seu investimento",
+    ],
+    mockup: "/images/mockups/mockup-trafego.png",
   },
   {
+    icon: "landing",
     title: "Landing pages",
     desc: "Landing pages que convertem visitantes em clientes.",
-    img: "/images/service-landing.png",
+    bullets: [
+      "Copy Estratégico",
+      "Feitas com as melhores práticas do mercado",
+    ],
+    mockup: "/images/mockups/mockup-landing.png",
   },
   {
+    icon: "criativos",
     title: "Criativos",
     desc: "Criativos que captam a atenção e geram resultados.",
-    img: "/images/service-criativos.png",
+    bullets: ["Foco em conversão", "Feito por publicitários experientes"],
+    mockup: "/images/mockups/mockup-criativos.png",
   },
   {
+    icon: "performance",
     title: "Performance",
     desc: "Análise de dados para otimização contínua.",
-    img: "/images/service-performance.png",
+    bullets: ["Testes A/B", "Acompanhamento das principais métricas"],
+    mockup: "/images/mockups/mockup-performance.png",
   },
 ];
 
@@ -42,19 +56,7 @@ export default function Services() {
 
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
           {services.map((s) => (
-            <article
-              key={s.title}
-              className="overflow-hidden rounded-2xl border border-white/10 bg-ink-850/60"
-            >
-              <Image
-                src={s.img}
-                alt={`${s.title} — ${s.desc}`}
-                width={1212}
-                height={638}
-                sizes="(max-width: 768px) 100vw, 620px"
-                className="h-auto w-full object-cover"
-              />
-            </article>
+            <ServiceCard key={s.title} {...s} />
           ))}
         </div>
 
