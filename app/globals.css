@@ -791,93 +791,60 @@ body {
   mask-image: radial-gradient(120% 90% at 50% 45%, #000 45%, transparent 82%);
 }
 
-.tl-rail {
+/* Flow line drawn through the dots (measured SVG overlay) */
+.tl-flow-svg {
   position: absolute;
-  top: 18px;
-  bottom: 18px;
-  left: var(--rail-x);
-  width: 2px;
-  margin-left: -1px;
-  background: repeating-linear-gradient(
-    180deg,
-    rgba(255, 62, 0, 0.5) 0 5px,
-    transparent 5px 11px
-  );
+  inset: 0;
+  pointer-events: none;
   z-index: 1;
+  overflow: visible;
 }
-.tl-rail-pulse {
-  position: absolute;
-  left: var(--rail-x);
-  top: 18px;
-  width: 10px;
-  height: 10px;
-  margin-left: -5px;
-  border-radius: 9999px;
-  background: #ff3e00;
-  box-shadow: 0 0 14px 3px rgba(255, 62, 0, 0.7);
-  z-index: 2;
-  animation: tl-rail-travel 5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+.tl-flow-head {
+  filter: drop-shadow(0 0 5px rgba(255, 62, 0, 0.9));
+  animation: tl-flow 4.5s linear infinite;
 }
-@keyframes tl-rail-travel {
-  0%   { top: 18px; opacity: 0; }
-  8%   { opacity: 1; }
-  92%  { opacity: 1; }
-  100% { top: calc(100% - 18px); opacity: 0; }
+@keyframes tl-flow {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: var(--flow-end, -100); }
 }
 
 .tl-row { position: relative; z-index: 3; }
 
-.tl-marker {
+/* Blinking connecting dot inside each card, on its inner edge */
+.tl-dot {
   position: absolute;
-  left: var(--rail-x);
-  top: 50%;
-  width: 15px;
-  height: 15px;
-  margin: -7.5px 0 0 -7.5px;
+  top: 42px;
+  left: -6px;
+  width: 13px;
+  height: 13px;
   border-radius: 9999px;
-  background: #1e1e1e;
-  border: 2px solid rgba(255, 62, 0, 0.6);
-  z-index: 4;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, background 0.4s ease;
-}
-.tl-marker[data-active="true"] {
   background: #ff3e00;
-  transform: scale(1.35);
-  box-shadow: 0 0 0 4px rgba(255, 62, 0, 0.18), 0 0 16px 2px rgba(255, 62, 0, 0.6);
+  z-index: 6;
+  animation: tl-blink 1.7s ease-in-out infinite;
+}
+.tl-dot[data-goal="true"] { background: #1e1e1e; }
+.tl-dot[data-active="true"] {
+  animation: tl-blink-active 1.1s ease-in-out infinite;
+}
+@keyframes tl-blink {
+  0%, 100% { opacity: 0.85; box-shadow: 0 0 0 0 rgba(255, 62, 0, 0.5); }
+  50%      { opacity: 1; box-shadow: 0 0 0 5px rgba(255, 62, 0, 0); }
+}
+@keyframes tl-blink-active {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 62, 0, 0.6), 0 0 10px 2px rgba(255, 62, 0, 0.7); }
+  50%      { opacity: 1; box-shadow: 0 0 0 8px rgba(255, 62, 0, 0), 0 0 10px 2px rgba(255, 62, 0, 0.5); }
 }
 
-.tl-connector {
-  position: absolute;
-  top: 50%;
-  height: 2px;
-  background: repeating-linear-gradient(90deg, rgba(255, 62, 0, 0.45) 0 4px, transparent 4px 8px);
-  z-index: 1;
-}
-/* mobile: connector runs from rail to the card on the right */
-.tl-connector { left: var(--rail-x); width: 26px; }
-
-.tl-card-wrap { margin-left: calc(var(--rail-x) + 40px); }
+/* Card position — single column (mobile) / alternating zigzag (desktop) */
+.tl-card-wrap { margin-left: 26px; }
 
 @media (min-width: 1024px) {
-  .tl-row[data-side="left"] .tl-card-wrap {
-    margin-left: 0;
-    margin-right: calc(50% + 44px);
-  }
-  .tl-row[data-side="right"] .tl-card-wrap {
-    margin-left: calc(50% + 44px);
-    margin-right: 0;
-  }
-  .tl-row[data-side="left"] .tl-connector {
-    left: auto;
-    right: 50%;
-    width: 44px;
-    margin-right: 1px;
-  }
-  .tl-row[data-side="right"] .tl-connector {
-    left: 50%;
-    width: 44px;
-    margin-left: 1px;
-  }
+  .tl-card-wrap { margin-left: 0; }
+  .tl-row[data-side="left"] .tl-card-wrap { margin-right: calc(50% + 44px); }
+  .tl-row[data-side="right"] .tl-card-wrap { margin-left: calc(50% + 44px); }
+  /* dot sits on the inner edge, facing the central flow corridor */
+  .tl-row[data-side="left"] .tl-dot { left: auto; right: -6px; }
+  .tl-row[data-side="right"] .tl-dot { left: -6px; right: auto; }
 }
 
 /* Card — tilt / glow / sheen (shares the pattern of the other sections) */
@@ -973,9 +940,10 @@ body {
   .tl-card:hover,
   .tl-card:active,
   .tl-card[data-active="true"] { transform: none; }
-  .tl-rail-pulse { animation: none; opacity: 0; }
+  .tl-flow-head { animation: none; }
+  .tl-dot,
+  .tl-dot[data-active="true"] { animation: none; }
   .tl-sheen::after { transition: none; }
-  .tl-marker[data-active="true"] { transform: scale(1.35); }
   .tl-card:hover .tl-pill,
   .tl-card[data-active="true"] .tl-pill,
   .tl-card:hover .tl-underline,

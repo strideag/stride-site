@@ -22,14 +22,14 @@ const steps: Step[] = [
 
 function StepCard({
   step,
-  index,
   active,
   onEnter,
+  dotRef,
 }: {
   step: Step;
-  index: number;
   active: boolean;
   onEnter: () => void;
+  dotRef: (el: HTMLSpanElement | null) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const frame = useRef<number | null>(null);
@@ -104,17 +104,76 @@ function StepCard({
           <span className="tl-underline block h-1.5 w-24 rounded-full" />
         )}
       </div>
+
+      {/* connecting dot — blinks; the flow line is drawn between these */}
+      <span
+        ref={dotRef}
+        data-active={active}
+        data-goal={isGoal}
+        className="tl-dot"
+        aria-hidden="true"
+      />
     </div>
   );
 }
 
 export default function ProcessTimeline() {
-  const ref = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const dotEls = useRef<Array<HTMLSpanElement | null>>([]);
+  const basePathRef = useRef<SVGPathElement>(null);
+
+  const [d, setD] = useState("");
+  const [dims, setDims] = useState({ w: 0, h: 0 });
+  const [len, setLen] = useState(0);
   const [active, setActive] = useState(0);
   const [hovering, setHovering] = useState(false);
 
+  // Measure the real position of every dot and draw a smooth path through them.
   useEffect(() => {
-    const el = ref.current;
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+
+    function measure() {
+      const box = wrap!.getBoundingClientRect();
+      const pts = dotEls.current
+        .filter((el): el is HTMLSpanElement => Boolean(el))
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top };
+        });
+      if (pts.length < 2) return;
+
+      // vertical-flowing S-curve between consecutive dots
+      let path = `M ${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p0 = pts[i];
+        const p1 = pts[i + 1];
+        const my = ((p0.y + p1.y) / 2).toFixed(1);
+        path += ` C ${p0.x.toFixed(1)},${my} ${p1.x.toFixed(1)},${my} ${p1.x.toFixed(1)},${p1.y.toFixed(1)}`;
+      }
+      setD(path);
+      setDims({ w: box.width, h: box.height });
+    }
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(wrap);
+    window.addEventListener("resize", measure);
+    const t = setTimeout(measure, 350); // re-measure after fonts/layout settle
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+      clearTimeout(t);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (basePathRef.current && d) setLen(basePathRef.current.getTotalLength());
+  }, [d, dims.w]);
+
+  // ambient cycle through the steps
+  useEffect(() => {
+    const el = wrapRef.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -139,39 +198,60 @@ export default function ProcessTimeline() {
     };
   }, [hovering]);
 
+  const seg = 70;
+
   return (
     <div
-      ref={ref}
+      ref={wrapRef}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       className="tl-grid relative mx-auto max-w-[900px]"
     >
-      {/* central rail + traveling pulse */}
-      <div className="tl-rail" aria-hidden="true" />
-      <div className="tl-rail-pulse" aria-hidden="true" />
-
-      <div className="flex flex-col gap-6 lg:gap-2">
-        {steps.map((step, i) => (
-          <div
-            key={step.n}
-            className="tl-row relative"
-            data-side={i % 2 === 0 ? "left" : "right"}
-          >
-            {/* marker on the rail */}
-            <span
-              className="tl-marker"
-              data-active={active === i}
-              aria-hidden="true"
+      {/* connecting flow line drawn through the dots */}
+      {dims.w > 0 && d && (
+        <svg
+          className="tl-flow-svg"
+          width={dims.w}
+          height={dims.h}
+          viewBox={`0 0 ${dims.w} ${dims.h}`}
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            ref={basePathRef}
+            d={d}
+            stroke="rgba(255,62,0,0.28)"
+            strokeWidth="2"
+            strokeDasharray="2 7"
+            strokeLinecap="round"
+          />
+          {len > 0 && (
+            <path
+              className="tl-flow-head"
+              d={d}
+              stroke="#ff3e00"
+              strokeWidth="2.6"
+              strokeLinecap="round"
+              style={{
+                strokeDasharray: `${seg} ${Math.max(len, 1)}`,
+                ["--flow-end" as string]: `-${len + seg}`,
+              }}
             />
-            {/* horizontal connector rail → card */}
-            <span className="tl-connector" aria-hidden="true" />
+          )}
+        </svg>
+      )}
 
+      <div className="flex flex-col gap-6 lg:gap-3">
+        {steps.map((step, i) => (
+          <div key={step.n} className="tl-row relative" data-side={i % 2 === 0 ? "left" : "right"}>
             <div className="tl-card-wrap [perspective:1000px]">
               <StepCard
                 step={step}
-                index={i}
                 active={active === i}
                 onEnter={() => setActive(i)}
+                dotRef={(el) => {
+                  dotEls.current[i] = el;
+                }}
               />
             </div>
           </div>
