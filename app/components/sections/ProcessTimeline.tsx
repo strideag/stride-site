@@ -10,8 +10,6 @@ type Step = {
   variant: Variant;
 };
 
-// Same content as before; variant follows the Figma rhythm
-// (orange / neutral alternation, with the final step highlighted).
 const steps: Step[] = [
   { n: "01", title: "Análise do seu negócio e mercado", variant: "orange" },
   { n: "02", title: "Criação da estratégia personalizada", variant: "light" },
@@ -20,15 +18,25 @@ const steps: Step[] = [
   { n: "05", title: "Escalação dos resultados", variant: "goal" },
 ];
 
+// Layout position of an element relative to `root`, ignoring CSS transforms
+// (so the reveal transform on the wrapper doesn't shift the measured dots).
+function layoutCenter(el: HTMLElement, root: HTMLElement) {
+  let x = 0;
+  let y = 0;
+  let node: HTMLElement | null = el;
+  while (node && node !== root) {
+    x += node.offsetLeft;
+    y += node.offsetTop;
+    node = node.offsetParent as HTMLElement | null;
+  }
+  return { x: x + el.offsetWidth / 2, y: y + el.offsetHeight / 2 };
+}
+
 function StepCard({
   step,
-  active,
-  onEnter,
   dotRef,
 }: {
   step: Step;
-  active: boolean;
-  onEnter: () => void;
   dotRef: (el: HTMLSpanElement | null) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -60,8 +68,6 @@ function StepCard({
       ref={ref}
       onMouseMove={handleMove}
       onMouseLeave={reset}
-      onMouseEnter={onEnter}
-      data-active={active}
       data-goal={isGoal}
       className="tl-card group relative overflow-hidden rounded-2xl border border-white/[0.14] p-7"
       style={{ backgroundColor: isGoal ? undefined : "#1e1e1e" }}
@@ -69,7 +75,6 @@ function StepCard({
       <div className="tl-glow" />
       <div className="tl-sheen" />
 
-      {/* ghost step number */}
       <span
         className="pointer-events-none absolute -right-1 -top-3 select-none text-[80px] font-bold leading-none"
         style={{ color: isGoal ? "rgba(30,30,30,0.18)" : "rgba(255,255,255,0.035)" }}
@@ -79,18 +84,27 @@ function StepCard({
       </span>
 
       <div className="relative z-10 flex flex-col gap-4">
-        <span
-          className={`tl-pill inline-flex w-fit items-center rounded-[14px] px-5 py-2 text-[17px] font-semibold ${
-            step.variant === "orange"
-              ? "text-ink-900"
-              : step.variant === "light"
-                ? "bg-faq text-ink-600"
-                : ""
-          }`}
-          data-variant={step.variant}
-        >
-          Passo {step.n}
-        </span>
+        {/* pill + in-card bullet */}
+        <div className="flex items-center gap-4">
+          <span
+            className={`tl-pill inline-flex w-fit items-center rounded-[14px] px-5 py-2 text-[17px] font-semibold ${
+              step.variant === "orange"
+                ? "text-ink-900"
+                : step.variant === "light"
+                  ? "bg-faq text-ink-600"
+                  : ""
+            }`}
+            data-variant={step.variant}
+          >
+            Passo {step.n}
+          </span>
+          <span
+            ref={dotRef}
+            data-goal={isGoal}
+            className="tl-dot"
+            aria-hidden="true"
+          />
+        </div>
 
         <p
           className={`text-[16px] leading-relaxed ${
@@ -104,15 +118,6 @@ function StepCard({
           <span className="tl-underline block h-1.5 w-24 rounded-full" />
         )}
       </div>
-
-      {/* connecting dot — blinks; the flow line is drawn between these */}
-      <span
-        ref={dotRef}
-        data-active={active}
-        data-goal={isGoal}
-        className="tl-dot"
-        aria-hidden="true"
-      />
     </div>
   );
 }
@@ -120,135 +125,176 @@ function StepCard({
 export default function ProcessTimeline() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const dotEls = useRef<Array<HTMLSpanElement | null>>([]);
-  const basePathRef = useRef<SVGPathElement>(null);
+  const rafRef = useRef<number | null>(null);
 
-  const [d, setD] = useState("");
-  const [dims, setDims] = useState({ w: 0, h: 0 });
-  const [len, setLen] = useState(0);
-  const [active, setActive] = useState(0);
-  const [hovering, setHovering] = useState(false);
+  const [geo, setGeo] = useState<{ d: string; total: number; cum: number[]; w: number; h: number }>({
+    d: "",
+    total: 0,
+    cum: [],
+    w: 0,
+    h: 0,
+  });
+  const [revealed, setRevealed] = useState(0);
+  const [visible, setVisible] = useState<boolean[]>(() => steps.map((_, i) => i === 0));
 
-  // Measure the real position of every dot and draw a smooth path through them.
+  // Measure dots (layout-based) and build an orthogonal rounded path through them.
   useEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
 
-    function measure() {
-      const box = wrap!.getBoundingClientRect();
+    function build() {
       const pts = dotEls.current
         .filter((el): el is HTMLSpanElement => Boolean(el))
-        .map((el) => {
-          const r = el.getBoundingClientRect();
-          return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top };
-        });
+        .map((el) => layoutCenter(el, wrap!));
       if (pts.length < 2) return;
 
-      // vertical-flowing S-curve between consecutive dots
-      let path = `M ${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
+      const R = 16;
+      let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+      const cum = [0];
+      let total = 0;
       for (let i = 0; i < pts.length - 1; i++) {
-        const p0 = pts[i];
-        const p1 = pts[i + 1];
-        const my = ((p0.y + p1.y) / 2).toFixed(1);
-        path += ` C ${p0.x.toFixed(1)},${my} ${p1.x.toFixed(1)},${my} ${p1.x.toFixed(1)},${p1.y.toFixed(1)}`;
+        const a = pts[i];
+        const b = pts[i + 1];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        // rounded "L": horizontal at a.y, corner, vertical to b.y
+        if (Math.abs(dx) < 1) {
+          d += ` L ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+        } else {
+          const hdir = Math.sign(dx);
+          const vdir = Math.sign(dy) || 1;
+          const cornerX = (b.x - hdir * R).toFixed(1);
+          const cornerY = (a.y + vdir * R).toFixed(1);
+          d += ` L ${cornerX} ${a.y.toFixed(1)}`;
+          d += ` Q ${b.x.toFixed(1)} ${a.y.toFixed(1)} ${b.x.toFixed(1)} ${cornerY}`;
+          d += ` L ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+        }
+        total += Math.abs(dx) + Math.abs(dy);
+        cum.push(total);
       }
-      setD(path);
-      setDims({ w: box.width, h: box.height });
+      setGeo({ d, total, cum, w: wrap!.offsetWidth, h: wrap!.offsetHeight });
     }
 
-    measure();
-    const ro = new ResizeObserver(measure);
+    build();
+    const ro = new ResizeObserver(build);
     ro.observe(wrap);
-    window.addEventListener("resize", measure);
-    const t = setTimeout(measure, 350); // re-measure after fonts/layout settle
+    window.addEventListener("resize", build);
+    const t = setTimeout(build, 350);
     return () => {
       ro.disconnect();
-      window.removeEventListener("resize", measure);
+      window.removeEventListener("resize", build);
       clearTimeout(t);
     };
   }, []);
 
+  // Play the sequenced reveal when scrolled into view; reset when fully out.
   useEffect(() => {
-    if (basePathRef.current && d) setLen(basePathRef.current.getTotalLength());
-  }, [d, dims.w]);
+    const wrap = wrapRef.current;
+    if (!wrap || !geo.total) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let playing = false;
 
-  // ambient cycle through the steps
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    function play() {
+      if (playing) return;
+      playing = true;
+      if (reduce) {
+        setRevealed(geo.total);
+        setVisible(steps.map(() => true));
+        return;
+      }
+      const speed = geo.total / 3; // ~3s to charge the whole line
+      let start: number | null = null;
+      const loop = (ts: number) => {
+        if (start === null) start = ts;
+        const rl = Math.min(geo.total, ((ts - start) / 1000) * speed);
+        setRevealed(rl);
+        setVisible((v) => {
+          const nv = v.slice();
+          for (let i = 1; i < geo.cum.length; i++) {
+            if (rl >= geo.cum[i] - 0.5) nv[i] = true;
+          }
+          return nv;
+        });
+        if (rl < geo.total) rafRef.current = requestAnimationFrame(loop);
+      };
+      rafRef.current = requestAnimationFrame(loop);
+    }
 
-    let timer: ReturnType<typeof setInterval> | null = null;
+    function resetSeq() {
+      playing = false;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      setRevealed(0);
+      setVisible(steps.map((_, i) => i === 0));
+    }
+
     const obs = new IntersectionObserver(
       ([e]) => {
-        if (e.isIntersecting && !timer) {
-          timer = setInterval(() => {
-            if (!hovering) setActive((a) => (a + 1) % steps.length);
-          }, 1800);
-        } else if (!e.isIntersecting && timer) {
-          clearInterval(timer);
-          timer = null;
-        }
+        if (e.isIntersecting) play();
+        else resetSeq();
       },
-      { threshold: 0.2 }
+      { threshold: 0.35 }
     );
-    obs.observe(el);
+    obs.observe(wrap);
     return () => {
       obs.disconnect();
-      if (timer) clearInterval(timer);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [hovering]);
-
-  const seg = 70;
+  }, [geo]);
 
   return (
-    <div
-      ref={wrapRef}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      className="tl-grid relative mx-auto max-w-[900px]"
-    >
-      {/* connecting flow line drawn through the dots */}
-      {dims.w > 0 && d && (
+    <div ref={wrapRef} className="tl-grid relative mx-auto max-w-[900px]">
+      {/* connecting flow line — dashes light up progressively */}
+      {geo.w > 0 && geo.d && (
         <svg
           className="tl-flow-svg"
-          width={dims.w}
-          height={dims.h}
-          viewBox={`0 0 ${dims.w} ${dims.h}`}
+          width={geo.w}
+          height={geo.h}
+          viewBox={`0 0 ${geo.w} ${geo.h}`}
           fill="none"
           aria-hidden="true"
         >
+          <defs>
+            <mask id="tl-reveal-mask">
+              <rect x="0" y="0" width={geo.w} height={geo.h} fill="black" />
+              <path
+                d={geo.d}
+                stroke="white"
+                strokeWidth="12"
+                fill="none"
+                pathLength={geo.total}
+                strokeDasharray={geo.total}
+                strokeDashoffset={geo.total - revealed}
+              />
+            </mask>
+          </defs>
+          {/* dim base — the path yet to light up */}
           <path
-            ref={basePathRef}
-            d={d}
-            stroke="rgba(255,62,0,0.28)"
-            strokeWidth="2"
-            strokeDasharray="2 7"
+            d={geo.d}
+            stroke="rgba(255,62,0,0.12)"
+            strokeWidth="2.4"
+            strokeDasharray="2 9"
             strokeLinecap="round"
           />
-          {len > 0 && (
+          {/* lit dashes, revealed by the growing mask */}
+          <g mask="url(#tl-reveal-mask)">
             <path
-              className="tl-flow-head"
-              d={d}
+              className="tl-flow-lit"
+              d={geo.d}
               stroke="#ff3e00"
-              strokeWidth="2.6"
+              strokeWidth="2.8"
+              strokeDasharray="2 9"
               strokeLinecap="round"
-              style={{
-                strokeDasharray: `${seg} ${Math.max(len, 1)}`,
-                ["--flow-end" as string]: `-${len + seg}`,
-              }}
             />
-          )}
+          </g>
         </svg>
       )}
 
       <div className="flex flex-col gap-6 lg:gap-3">
         {steps.map((step, i) => (
           <div key={step.n} className="tl-row relative" data-side={i % 2 === 0 ? "left" : "right"}>
-            <div className="tl-card-wrap [perspective:1000px]">
+            <div className="tl-card-wrap [perspective:1000px]" data-visible={visible[i]}>
               <StepCard
                 step={step}
-                active={active === i}
-                onEnter={() => setActive(i)}
                 dotRef={(el) => {
                   dotEls.current[i] = el;
                 }}
