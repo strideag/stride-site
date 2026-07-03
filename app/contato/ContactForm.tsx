@@ -12,29 +12,38 @@ const revenueRanges = [
 const inputClass =
   "w-full rounded-2xl border border-white/15 bg-ink-850 px-5 py-3.5 text-sm text-cloud placeholder:text-faint focus:border-accent focus:outline-none";
 
-// The form composes a WhatsApp message — conversion happens in the channel
-// the team already answers, with zero backend. Swap for RD Station later.
+type Status = "idle" | "sending" | "success" | "error";
+
 export default function ContactForm() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const lines = [
-      "Olá! Quero agendar uma sessão estratégica gratuita.",
-      "",
-      `Nome: ${data.get("name")}`,
-      `E-mail: ${data.get("email")}`,
-      `Empresa: ${data.get("company")}`,
-      data.get("website") ? `Site: ${data.get("website")}` : null,
-      `Faturamento mensal: ${data.get("revenue")}`,
-      "",
-      `Principal desafio: ${data.get("challenge")}`,
-    ].filter((l) => l !== null);
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    setStatus("sending");
 
-    const url = `https://wa.me/5562998456804?text=${encodeURIComponent(lines.join("\n"))}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-    setSent(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "lead",
+          name: data.get("name"),
+          email: data.get("email"),
+          company: data.get("company"),
+          website: data.get("website"),
+          revenue: data.get("revenue"),
+          challenge: data.get("challenge"),
+          extra: data.get("extra"),
+        }),
+      });
+      if (!res.ok) throw new Error("send_failed");
+      form.reset();
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
   }
 
   return (
@@ -71,15 +80,38 @@ export default function ContactForm() {
         aria-label="Principal desafio"
         className={`${inputClass} resize-none`}
       />
+      {/* Honeypot anti-spam: invisível para humanos, bots preenchem */}
+      <input
+        name="extra"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[9999px] h-0 w-0 opacity-0"
+      />
       <button
         type="submit"
-        className="w-full rounded-full bg-accent px-7 py-4 text-[12px] font-medium uppercase tracking-[0.12em] text-white shadow-[0_8px_24px_-6px_rgba(255,62,0,0.55)] transition-colors hover:bg-accent-dark"
+        disabled={status === "sending"}
+        className="w-full rounded-full bg-accent px-7 py-4 text-[12px] font-medium uppercase tracking-[0.12em] text-white shadow-[0_8px_24px_-6px_rgba(255,62,0,0.55)] transition-colors hover:bg-accent-dark disabled:cursor-wait disabled:opacity-60"
       >
-        Agendar sessão estratégica gratuita
+        {status === "sending" ? "Enviando..." : "Agendar sessão estratégica gratuita"}
       </button>
-      {sent && (
+      {status === "success" && (
         <p className="text-center text-sm text-cloud/70">
-          Abrimos o WhatsApp com a sua mensagem pronta — é só enviar! 🚀
+          Recebemos seus dados! Entraremos em contato em até 1 dia útil. 🚀
+        </p>
+      )}
+      {status === "error" && (
+        <p className="text-center text-sm text-accent">
+          Não foi possível enviar agora. Tente novamente ou{" "}
+          <a
+            href="https://wa.me/5562998456804"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            chame no WhatsApp
+          </a>
+          .
         </p>
       )}
     </form>

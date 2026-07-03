@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Container from "../ui/Container";
+import NewsletterForm from "./NewsletterForm";
 
 export default function Footer() {
   return (
@@ -26,22 +27,7 @@ export default function Footer() {
             <p className="mt-2 text-base text-muted">
               Insira seu melhor e-mail para receber nossas principais notícias
             </p>
-            {/* TODO: conectar a um backend/serviço de newsletter */}
-            <form className="mt-5 flex flex-col gap-3 sm:flex-row">
-              <input
-                type="email"
-                required
-                placeholder="Escreva seu email"
-                aria-label="Seu email"
-                className="w-full rounded-full border border-white/15 bg-ink-850 px-5 py-3 text-sm text-cloud placeholder:text-faint focus:border-accent focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="shrink-0 rounded-full bg-cloud px-6 py-3 text-base font-medium text-ink-800 transition-colors hover:bg-white"
-              >
-                Enviar
-              </button>
-            </form>
+            <NewsletterForm />
           </div>
         </div>
 
