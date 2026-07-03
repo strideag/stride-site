@@ -1,5 +1,5 @@
 import Container from "../ui/Container";
-import MethodDiagram from "./MethodDiagram";
+import MethodFunnel from "./MethodFunnel";
 
 export default function Method() {
   return (
@@ -16,7 +16,7 @@ export default function Method() {
         </div>
 
         <div className="mt-14">
-          <MethodDiagram />
+          <MethodFunnel />
         </div>
       </Container>
     </section>

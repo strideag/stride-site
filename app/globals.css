@@ -626,3 +626,141 @@ body {
   .chal-card:hover .chal-drop,
   .chal-card:hover .chal-blink { animation: none; }
 }
+
+/* ── Método Stride — interactive funnel ───────────────────────
+   Readable stage cards with cursor tilt, ambient active-cycle
+   highlight, animated flow connectors and an orange pill label.  */
+.method-bg { padding: 4px; }
+/* faint vertical lines behind the cards, faded at the edges */
+.method-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 102px,
+    rgba(255, 255, 255, 0.04) 102px,
+    rgba(255, 255, 255, 0.04) 103px
+  );
+  -webkit-mask-image: radial-gradient(120% 100% at 50% 40%, #000 55%, transparent 85%);
+  mask-image: radial-gradient(120% 100% at 50% 40%, #000 55%, transparent 85%);
+}
+.method-bg > * { position: relative; z-index: 1; }
+
+.method-card {
+  --mx: 0;
+  --my: 0;
+  transform: rotateX(calc(var(--my) * -4deg)) rotateY(calc(var(--mx) * 6deg));
+  transform-style: preserve-3d;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s ease,
+    box-shadow 0.5s ease;
+  will-change: transform;
+  min-height: 210px;
+  margin: 0 6px;
+}
+.method-card[data-active="true"] {
+  border-color: rgba(255, 62, 0, 0.55);
+  box-shadow:
+    0 20px 55px -30px rgba(255, 62, 0, 0.5),
+    inset 0 0 0 1px rgba(255, 62, 0, 0.15);
+}
+.method-card:hover {
+  border-color: rgba(255, 62, 0, 0.6);
+  box-shadow:
+    0 26px 65px -30px rgba(255, 62, 0, 0.55),
+    0 10px 30px -14px rgba(0, 0, 0, 0.75);
+}
+.method-card:active {
+  transition-duration: 0.12s;
+  transform: rotateX(calc(var(--my) * -4deg)) rotateY(calc(var(--mx) * 6deg)) scale(0.98);
+}
+
+.method-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  background: radial-gradient(
+    240px circle at calc(50% + var(--mx) * 42%) calc(50% + var(--my) * 42%),
+    rgba(255, 62, 0, 0.18),
+    transparent 62%
+  );
+}
+.method-card:hover .method-glow,
+.method-card[data-active="true"] .method-glow { opacity: 1; }
+
+.method-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.method-sheen::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: 0;
+  width: 42%;
+  height: 180%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  transform: translateX(-160%) rotate(8deg);
+  transition: transform 0.85s ease;
+}
+.method-card:hover .method-sheen::after { transform: translateX(380%) rotate(8deg); }
+
+.method-pill {
+  background: linear-gradient(180deg, #ff7a28 24.5%, #fb5937 75.8%, #ff3e00 201%);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.method-card:hover .method-pill,
+.method-card[data-active="true"] .method-pill { transform: translateY(-2px) scale(1.03); }
+
+.method-icon {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease;
+}
+.method-card:hover .method-icon,
+.method-card[data-active="true"] .method-icon {
+  transform: translateY(-3px) scale(1.08);
+  filter: drop-shadow(0 6px 14px rgba(255, 62, 0, 0.35));
+}
+
+.method-spark { transform-box: fill-box; transform-origin: center; }
+.method-card:hover .method-spark { animation: method-spark-kf 1s ease infinite; }
+@keyframes method-spark-kf {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+/* Flow connectors — traveling pulse + marching ants when lit */
+.method-pulse { transform-box: fill-box; animation: method-pulse-kf 2s linear infinite; }
+@keyframes method-pulse-kf {
+  0%   { transform: translateX(2px); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateX(42px); opacity: 0; }
+}
+.method-conn-line { animation: method-ants-kf 0.7s linear infinite; }
+@keyframes method-ants-kf {
+  to { stroke-dashoffset: -7; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .method-card,
+  .method-card:hover,
+  .method-card:active,
+  .method-card[data-active="true"] { transform: none; }
+  .method-sheen::after { transition: none; }
+  .method-card:hover .method-icon,
+  .method-card[data-active="true"] .method-icon { transform: none; }
+  .method-card:hover .method-spark,
+  .method-pulse,
+  .method-conn-line { animation: none; }
+}
