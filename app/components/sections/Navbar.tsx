@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Container from "../ui/Container";
 import Button from "../ui/Button";
+import { WHATSAPP_URL } from "../../lib/site";
 
 // Absolute paths so anchors work from subpages (/sobre, /servicos/*, /contato)
 const navLinks = [
@@ -10,9 +11,6 @@ const navLinks = [
   { label: "Sobre", href: "/sobre" },
   { label: "Contato", href: "/contato" },
 ];
-
-const WHATSAPP_URL =
-  "https://wa.me/5562998456804?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Stride";
 
 export default function Navbar() {
   return (

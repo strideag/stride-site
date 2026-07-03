@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { WHATSAPP_URL } from "../lib/site";
 
 const revenueRanges = [
   "Até R$ 50 mil/mês",
@@ -104,7 +105,7 @@ export default function ContactForm() {
         <p className="text-center text-sm text-accent">
           Não foi possível enviar agora. Tente novamente ou{" "}
           <a
-            href="https://wa.me/5562998456804"
+            href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="underline"

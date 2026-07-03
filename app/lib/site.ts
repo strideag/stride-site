@@ -5,5 +5,6 @@ export const SITE_URL =
 
 export const SITE_NAME = "Stride";
 
-export const WHATSAPP_URL =
-  "https://wa.me/5562998456804?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Stride";
+export const WHATSAPP_NUMBER = "5562996797179";
+
+export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Stride`;
