@@ -143,33 +143,57 @@ export default function ProcessTimeline() {
     if (!wrap) return;
 
     function build() {
-      const pts = dotEls.current
-        .filter((el): el is HTMLSpanElement => Boolean(el))
-        .map((el) => layoutCenter(el, wrap!));
-      if (pts.length < 2) return;
+      const els = dotEls.current.filter((el): el is HTMLSpanElement => Boolean(el));
+      if (els.length < 2) return;
+      const pts = els.map((el) => layoutCenter(el, wrap!));
+      // right edge of each bullet's card (to route the line through a clear
+      // channel to the right, so it never crosses the pill or the text)
+      const cardRight = els.map((el) => {
+        const card = el.closest(".tl-card") as HTMLElement | null;
+        if (!card) return pts[0].x;
+        let x = 0;
+        let node: HTMLElement | null = card;
+        while (node && node !== wrap) {
+          x += node.offsetLeft;
+          node = node.offsetParent as HTMLElement | null;
+        }
+        return x + card.offsetWidth;
+      });
 
       const R = 16;
-      let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+      const f = (n: number) => n.toFixed(1);
+      let d = `M ${f(pts[0].x)} ${f(pts[0].y)}`;
       const cum = [0];
       let total = 0;
+
       for (let i = 0; i < pts.length - 1; i++) {
         const a = pts[i];
         const b = pts[i + 1];
         const dx = b.x - a.x;
         const dy = b.y - a.y;
-        // rounded "L": horizontal at a.y, corner, vertical to b.y
+        const vdir = Math.sign(dy) || 1;
+
         if (Math.abs(dx) < 1) {
-          d += ` L ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+          // straight vertical (mobile)
+          d += ` L ${f(b.x)} ${f(b.y)}`;
+          total += Math.abs(dy);
+        } else if (dx > 0) {
+          // target to the right: H at a.y → corner → V to b.y (arrive from above)
+          d += ` L ${f(b.x - R)} ${f(a.y)}`;
+          d += ` Q ${f(b.x)} ${f(a.y)} ${f(b.x)} ${f(a.y + vdir * R)}`;
+          d += ` L ${f(b.x)} ${f(b.y)}`;
+          total += Math.abs(dx) + Math.abs(dy);
         } else {
-          const hdir = Math.sign(dx);
-          const vdir = Math.sign(dy) || 1;
-          const cornerX = (b.x - hdir * R).toFixed(1);
-          const cornerY = (a.y + vdir * R).toFixed(1);
-          d += ` L ${cornerX} ${a.y.toFixed(1)}`;
-          d += ` Q ${b.x.toFixed(1)} ${a.y.toFixed(1)} ${b.x.toFixed(1)} ${cornerY}`;
-          d += ` L ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+          // target to the left: exit RIGHT to a channel past the card, drop
+          // down, then come back LEFT to the bullet (arrive from the right)
+          const ch = cardRight[i] + 22;
+          d += ` L ${f(ch - R)} ${f(a.y)}`;
+          d += ` Q ${f(ch)} ${f(a.y)} ${f(ch)} ${f(a.y + vdir * R)}`;
+          d += ` L ${f(ch)} ${f(b.y - vdir * R)}`;
+          d += ` Q ${f(ch)} ${f(b.y)} ${f(ch - R)} ${f(b.y)}`;
+          d += ` L ${f(b.x)} ${f(b.y)}`;
+          total += ch - a.x + Math.abs(dy) + (ch - b.x);
         }
-        total += Math.abs(dx) + Math.abs(dy);
         cum.push(total);
       }
       setGeo({ d, total, cum, w: wrap!.offsetWidth, h: wrap!.offsetHeight });

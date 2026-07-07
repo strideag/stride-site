@@ -791,8 +791,9 @@ body {
   mask-image: radial-gradient(120% 90% at 50% 45%, #000 45%, transparent 82%);
 }
 
-/* Flow line drawn through the dots — behind the cards, so the lit dashes
-   read in the gaps between cards and never cross the pills/text */
+/* Flow line drawn through the dots. Behind the cards on mobile (straight
+   vertical, reads in the gaps); in front on desktop where it's routed
+   through a clear right channel so it unites with the bullets. */
 .tl-flow-svg {
   position: absolute;
   inset: 0;
@@ -800,7 +801,18 @@ body {
   z-index: 1;
   overflow: visible;
 }
-.tl-flow-lit { filter: drop-shadow(0 0 4px rgba(255, 62, 0, 0.85)); }
+@media (min-width: 1024px) {
+  .tl-flow-svg { z-index: 5; }
+}
+/* lit dashes blink in sync with the bullets */
+.tl-flow-lit {
+  filter: drop-shadow(0 0 4px rgba(255, 62, 0, 0.85));
+  animation: tl-line-blink 1.7s ease-in-out infinite;
+}
+@keyframes tl-line-blink {
+  0%, 100% { opacity: 0.7; }
+  50%      { opacity: 1; }
+}
 
 .tl-row { position: relative; z-index: 3; }
 
@@ -838,7 +850,11 @@ body {
 @media (min-width: 1024px) {
   .tl-card-wrap { margin-left: 0; }
   .tl-row[data-side="left"] .tl-card-wrap { margin-right: calc(50% + 44px); }
-  .tl-row[data-side="right"] .tl-card-wrap { margin-left: calc(50% + 44px); }
+  /* right cards leave a clear channel on the far right for the connector */
+  .tl-row[data-side="right"] .tl-card-wrap {
+    margin-left: calc(50% + 44px);
+    margin-right: 58px;
+  }
 }
 
 /* Card — tilt / glow / sheen (shares the pattern of the other sections) */
