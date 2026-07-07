@@ -71,20 +71,32 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* client logos */}
-        <div className="hero-logos mt-14 flex flex-wrap items-center gap-x-10 gap-y-6 opacity-70 grayscale">
-          {clientLogos.map((logo) => (
-            <Image
-              key={logo.alt}
-              src={logo.src}
-              alt={logo.alt}
-              width={logo.w}
-              height={32}
-              className="h-7 w-auto object-contain sm:h-8"
-            />
-          ))}
-        </div>
       </Container>
+
+      {/* client logos — full-bleed infinite marquee with edge fade */}
+      <LogoMarquee />
     </section>
+  );
+}
+
+function LogoMarquee() {
+  // duplicated once so translateX(-50%) loops seamlessly
+  const row = [...clientLogos, ...clientLogos];
+  return (
+    <div className="hero-logos marquee mt-16 opacity-70 grayscale">
+      <div className="marquee-track">
+        {row.map((logo, i) => (
+          <Image
+            key={i}
+            src={logo.src}
+            alt={i < clientLogos.length ? logo.alt : ""}
+            aria-hidden={i >= clientLogos.length}
+            width={logo.w}
+            height={32}
+            className="marquee-item h-7 w-auto object-contain sm:h-8"
+          />
+        ))}
+      </div>
+    </div>
   );
 }
