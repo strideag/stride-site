@@ -51,7 +51,7 @@ export default function Hero() {
 
         {/* stat cards – entrance animation on the wrapper so the fill-mode
             transform doesn't override the .stat-card hover scale */}
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {stats.map((s, i) => (
             <div
               key={s.src}
