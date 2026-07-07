@@ -14,7 +14,6 @@ import Founders from "./components/sections/Founders";
 import Faq from "./components/sections/Faq";
 import FinalCta from "./components/sections/FinalCta";
 import Footer from "./components/sections/Footer";
-import HowWeWorkLottie from "./components/sections/HowWeWorkLottie";
 import Spline from "@splinetool/react-spline/next";
 import { homeFaqs } from "./lib/faqs";
 
@@ -41,7 +40,6 @@ export default function Home() {
         <Challenges />
         <Services />
         <HowWeWork />
-        <HowWeWorkLottie />
         <CtaBanner
           title="Agende uma call gratuita hoje e ganhe uma análise completa das suas campanhas atuais"
           buttonLabel="Agendar uma conversa"
