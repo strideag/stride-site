@@ -1,7 +1,7 @@
 // Base URL for canonical links, sitemap and JSON-LD.
 // Set NEXT_PUBLIC_SITE_URL in production (e.g. on Vercel) to the final domain.
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://stride-site.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://stride-ag.com";
 
 export const SITE_NAME = "Stride";
 

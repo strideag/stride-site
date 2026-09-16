@@ -1111,6 +1111,65 @@ body {
 .tl-card:hover .tl-underline,
 .tl-card[data-active="true"] .tl-underline { transform: scaleX(1.35); }
 
+/* ── /bni — Diagnóstico de Funil LP ───────────────────────────
+   Near-black page that ignites into orange at the very bottom. Stops are
+   pinned to px from the bottom (not %) so contrast is predictable at any
+   page height: only the dark form card and the ink-text closing band
+   (last 280px) ever sit on the bright end of the gradient.          */
+.bni-bg {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(70% 520px at 90% 0%, rgba(255, 62, 0, 0.13), transparent 70%),
+    linear-gradient(
+      180deg,
+      var(--color-ink-950) 0,
+      var(--color-ink-950) calc(100% - 900px),
+      #2a0703 calc(100% - 640px),
+      var(--color-accent-deep) calc(100% - 460px),
+      var(--color-accent-dark) calc(100% - 280px),
+      var(--color-accent) calc(100% - 140px),
+      var(--color-accent-light) 100%
+    );
+}
+/* film grain — only over the gradient zone */
+.bni-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  -webkit-mask-image: linear-gradient(180deg, transparent calc(100% - 900px), #000 calc(100% - 520px));
+  mask-image: linear-gradient(180deg, transparent calc(100% - 900px), #000 calc(100% - 520px));
+}
+
+/* highlighted "plano de 3 ações" card — ink text on orange (≥6:1) */
+.bni-highlight {
+  background: linear-gradient(180deg, #ff7a28 24.5%, #fb5937 75.8%, #ff3e00 201%);
+}
+
+/* visible focus that reads on dark, red and orange grounds alike */
+.bni a:focus-visible,
+.bni button:focus-visible,
+.bni input:focus-visible,
+.bni select:focus-visible,
+.bni .bni-radio:focus-visible + span {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--color-accent-dark);
+}
+.bni h2:focus { outline: none; }
+
+.bni-sticky { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .bni-sticky { transition: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tl-card,
   .tl-card:hover,
